@@ -1,5 +1,6 @@
 from django.http import HttpResponse
 from .models import Event
+from .models import Match
 
 def index(request):
     events = Event.objects.order_by('event_start_date')
@@ -23,10 +24,24 @@ def event(request, event_code):
     event = Event.objects.get(event_code=event_code)
     startDate = event.event_start_date.strftime("%B %d, %Y")
     endDate = event.event_end_date.strftime("%B %d, %Y")
-    output = f"<h1>{event.event_name}</h1>"
+    # Header
+    output = ""
+    output += "<style>table, th, td {  border:1px solid black; } </style>"
+    # Event Information
+    output += f"<h1>{event.event_name}</h1>"
     output += f"From {startDate} to {endDate}<br>"
+    # Teams
     output += "Teams:<br><ul>"
     for team in event.teams.all():
         output += f"<li>{team.team_name}</li>"
+    # Schedule
+    output += ("Schedule:<br>"
+               "<table>"
+               "<tr>"
+               "<th>Match</th><th>Time</th><th>Red Teams</th><th>Blue Teams</th><th>Red Score</th><th>Blue Score</th>")
+    for match in Match.objects.filter(event=event):
+        output += f"<tr><td>{match.phase} {match.nbr}</td><td>{match.scheduled_time}</td><td>{match.redTeam1} {match.redTeam2}</td><td>{match.blueTeam1} {match.redTeam2}</td><td>{match.redScore}</td><td>{match.blueScore}</td></tr>"
+
+    # Back Button
     output += "</ul><br><a href=/>Back</a>"
     return HttpResponse(output)
