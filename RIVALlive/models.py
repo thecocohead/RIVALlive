@@ -13,30 +13,30 @@ MATCH_STATUS_CHOICES = {
 }
 
 class Event(models.Model):
-    event_name = models.CharField(max_length=200)
-    event_code = models.CharField(max_length=200)
-    event_start_date = models.DateTimeField("Start Date")
-    event_end_date = models.DateTimeField("End Date")
+    name = models.CharField(max_length=200)
+    code = models.CharField(max_length=200)
+    startDate = models.DateTimeField("Start Date")
+    endDate = models.DateTimeField("End Date")
     teams = models.ManyToManyField('Team')
 
     def __str__(self):
-        return self.event_name
+        return self.name
 
 class Team(models.Model):
-    team_name = models.CharField(max_length=200)
-    team_id = models.CharField(max_length=200)
-    contact_email = models.CharField(max_length=200)
+    name = models.CharField(max_length=200)
+    number = models.CharField(max_length=200)
+    contactEmail = models.CharField(max_length=200)
 
     def __str__(self):
-        return self.team_name
+        return self.name
 
 class Match(models.Model):
     event = models.ForeignKey(Event, on_delete=models.CASCADE, related_name="event")
     phase = models.CharField(max_length=200, choices=MATCH_PHASE_CHOICES.items())
     status = models.CharField(max_length=200, choices=MATCH_STATUS_CHOICES.items())
     nbr = models.IntegerField()
-    scheduled_time = models.DateTimeField()
-    play_time = models.DateTimeField(null=True, blank=True)
+    scheduledTime = models.DateTimeField()
+    playedTime = models.DateTimeField(null=True, blank=True)
     redTeam1 = models.ForeignKey(Team, on_delete=models.CASCADE, related_name="redTeam1")
     redTeam2 = models.ForeignKey(Team, on_delete=models.CASCADE, related_name="redTeam2")
     blueTeam1 = models.ForeignKey(Team, on_delete=models.CASCADE,  related_name="blueTeam1")

@@ -22,5 +22,5 @@ from .models import Event
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', views.index, name='index'),
-    path('event/<str:event_code>', views.event, name='event'),
+    path('event/<str:code>', views.event, name='event'),
 ]

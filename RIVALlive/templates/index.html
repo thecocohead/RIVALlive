@@ -1,0 +1,23 @@
+{% extends "main.html" %}
+{% block title %} RIVAL Live {% endblock %}
+{% block content %}
+
+    <table>
+    <tr>
+        <th>Event Code</th>
+        <th>Event Name</th>
+        <th>Event Start Date</th>
+        <th>Event End Date</th>
+    </tr>
+
+    {% for event in events %}
+        <tr>
+        <td><a href="/event/{{ event.code }}">{{ event.code }}</a></td>
+        <td><b>{{event.name}}</b></td>
+        <td>{{event.startDate}}</td>
+        <td>{{event.endDate}}</td>
+        </tr>
+    {% endfor %}
+    </table>
+
+{% endblock %}
