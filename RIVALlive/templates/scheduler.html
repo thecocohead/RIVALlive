@@ -1,0 +1,22 @@
+{% extends "main.html" %}
+{% load static %}
+{% block title %} {{ eventCode }} Scheduler {% endblock %}
+{% block content %}
+    <script src="/static/moment.js"></script>
+    <script src="/static/scheduler.js">
+    </script>
+
+    <p>Number of teams: {{ numTeams }}</p>
+<form action = "javascript:previewSchedule({{ numTeams }})" method = "post">
+    {% csrf_token %}
+    {{ form.as_table }}
+    <input type = "submit" value = "Preview" >
+</form>
+
+    <div id="preview">
+
+    </div>
+
+{% block response %}
+{% endblock %}
+{% endblock %}

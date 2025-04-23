@@ -1,7 +1,7 @@
 {% extends "main.html" %}
-{% block title %} {{ event.event_name }} {% endblock %}
+{% block title %} {{ event.name }} {% endblock %}
 {% block content %}
-    <h1>{{ event.event_name }}</h1>
+    <h1>{{ event.name }}</h1>
     {{ startDate }} to {{ endDate }}
     <h2>Teams</h2>
     <ul>
@@ -31,5 +31,10 @@
             </tr>
         {% endfor %}
     </table>
+
+    <h2>Event Administration</h2>
+    <ul>
+        <li><a href="/event/{{ event.code }}/scheduler">Match Scheduler</a></li>
+    </ul>
 
 {% endblock %}

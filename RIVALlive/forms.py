@@ -1,6 +1,8 @@
+import datetime
+
 from django import forms
 
-class ScheduleGenerationForm(forms.Form):
+class SchedulerForm(forms.Form):
     rounds = forms.IntegerField(min_value=1)
-    cycleTime = forms.IntegerField(min_value=0)
-    startTime = forms.DateTimeField()
+    cycleTime = forms.FloatField(min_value=0)
+    startTime = forms.DateTimeField(initial=datetime.datetime.now())

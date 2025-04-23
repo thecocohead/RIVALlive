@@ -1,8 +1,12 @@
+import datetime
+import math
+
 from django.http import HttpResponse
 from django.shortcuts import render
 from .models import Event
 from .models import Match
-from .forms import ScheduleGenerationForm
+from .forms import SchedulerForm
+
 
 def index(request):
     events = Event.objects.order_by('startDate')
@@ -34,3 +38,14 @@ def event(request, code):
     }
 
     return render(request, "event.html", data)
+
+def scheduler(request, code):
+    teamsCount = Event.objects.get(code=code).teams.all().count()
+    form = SchedulerForm(request.POST or None)
+    context = {}
+    # GET & POST
+    context["form"] = form
+    context["eventCode"] = code
+    context["numTeams"] = teamsCount
+
+    return render(request, "scheduler.html", context)
