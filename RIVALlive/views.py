@@ -2,10 +2,11 @@ import datetime
 import math
 
 from django.http import HttpResponse
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from .models import Event
 from .models import Match
 from .forms import SchedulerForm
+from .scheduler import outerScheduler
 
 
 def index(request):
@@ -41,11 +42,20 @@ def event(request, code):
 
 def scheduler(request, code):
     teamsCount = Event.objects.get(code=code).teams.all().count()
-    form = SchedulerForm(request.POST or None)
-    context = {}
     # GET & POST
-    context["form"] = form
+    context = {}
     context["eventCode"] = code
     context["numTeams"] = teamsCount
+    form = SchedulerForm()
+    if request.method == "GET":
+        # GET request
+        context["form"] = form
+    elif request.method == "POST":
+        # POST Request
+        responseForm = SchedulerForm(request.POST)
+        if responseForm.is_valid():
+            outerScheduler(Event.objects.get(code=code), Event.objects.get(code=code).teams.all(), responseForm.cleaned_data["rounds"], responseForm.cleaned_data["cycleTime"],
+                           responseForm.cleaned_data["startTime"])
+        return redirect(f"/event/{code}")
 
     return render(request, "scheduler.html", context)

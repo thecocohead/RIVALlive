@@ -6,13 +6,21 @@ class Match {
 
 }
 
-function previewSchedule(numTeams) {
+function previewSchedule() {
     //Input
-    rounds = Number(document.getElementById("id_rounds").value);
-    cycleTime = Number(document.getElementById("id_cycleTime").value);
-    startTime = moment(document.getElementById("id_startTime").value);
+    const teams = parseInt(document.getElementById("numTeams").innerText);
+    let rounds = parseInt(document.getElementById("id_rounds").value);
+    const cycleTime = parseInt(document.getElementById("id_cycleTime").value);
+    const startTime = moment(document.getElementById("id_startTime").value);
+    //Check Data
+
+
     //Get number of matches
-    numMatches = Math.ceil((rounds * numTeams) / 4)
+    let numMatches = Math.ceil((rounds * teams) / 4)
+
+    if(isNaN(numMatches)) {
+        return;
+    }
 
     let matches = [];
     //Create matches
@@ -25,25 +33,25 @@ function previewSchedule(numTeams) {
 
 
     //Display Matches
-    var responseDiv = document.getElementById("preview");
+    let responseDiv = document.getElementById("preview");
     //clear
     responseDiv.innerHTML = "";
 
     //Show Base information
-    header = document.createElement('b');
+    let header = document.createElement('b');
     header.textContent = `Total Matches: ${numMatches}`;
 
     responseDiv.appendChild(header);
 
     //match table
-    table = document.createElement('table');
-    tbody = document.createElement('tbody');
+    let table = document.createElement('table');
+    let tbody = document.createElement('tbody');
     table.appendChild(tbody);
 
     //first row
-    row = document.createElement("tr");
-    matchHeader = document.createElement("th");
-    startTimeHeader = document.createElement("th");
+    let row = document.createElement("tr");
+    let matchHeader = document.createElement("th");
+    let startTimeHeader = document.createElement("th");
 
     matchHeader.textContent = "Match";
     startTimeHeader.textContent = "Start Time";
@@ -54,9 +62,9 @@ function previewSchedule(numTeams) {
     tbody.appendChild(row);
 
     matches.forEach(item => {
-            row = document.createElement("tr");
-            number = document.createElement("th");
-            startTime = document.createElement("td");
+            let row = document.createElement("tr");
+            let number = document.createElement("th");
+            let startTime = document.createElement("td");
             number.textContent = `Q${item.number}`;
             startTime.textContent = item.startTime.format("ddd hh:mm:ss a");
 

@@ -6,12 +6,21 @@
     <script src="/static/scheduler.js">
     </script>
 
-    <p>Number of teams: {{ numTeams }}</p>
-<form action = "javascript:previewSchedule({{ numTeams }})" method = "post">
+    <p>Number of teams: <span id="numTeams">{{ numTeams }}</span></p>
+<form  method = "post">
     {% csrf_token %}
     {{ form.as_table }}
-    <input type = "submit" value = "Preview" >
+    <input type = "submit" value = "Build Schedule" >
 </form>
+
+    <script>
+        const rounds = document.getElementById("id_rounds");
+        const cycletime = document.getElementById("id_cycleTime");
+        const startTime = document.getElementById("id_startTime");
+        rounds.addEventListener("keyup", previewSchedule)
+        cycletime.addEventListener("keyup", previewSchedule)
+        startTime.addEventListener("keyup", previewSchedule)
+    </script>
 
     <div id="preview">
 
