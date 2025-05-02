@@ -23,6 +23,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('', views.index, name='index'),
     path('event/<str:code>', views.event, name='event'),
-
     path('event/<str:code>/scheduler', views.scheduler, name='generateSchedule'),
+    path('event/<str:code>/scoreEntry/<str:stage>/<int:matchNumber>', views.scoreEntry, name='scoreEntry'),
+    path('event/<str:code>/scoreEntry/next', views.nextScoreEntry, name='nextScoreEntry'),
 ]

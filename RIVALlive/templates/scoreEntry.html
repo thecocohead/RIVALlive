@@ -1,0 +1,21 @@
+{% extends "main.html" %}
+{% load static %}
+{% block title %} Score Entry {% endblock %}
+{% block content %}
+    <h1>Score Entry {{ stage }}{{ matchNumber }}</h1>
+    <form  method="POST" enctype="multipart/form-data">
+    {% csrf_token %}
+        {{ formset.management_form }}
+        <table>
+            <tr>
+                <th>Red: {{ redTeam1 }} & {{ redTeam2 }}</th>
+                <th>Blue: {{ blueTeam1 }} & {{ blueTeam2 }}</th>
+            </tr>
+            <tr>
+                <td>{{ formset.forms.0.as_p }}</td>
+                <td>{{ formset.forms.1.as_p }}</td>
+            </tr>
+        </table>
+    <input type = "submit" value = "Submit" >
+</form>
+{% endblock %}

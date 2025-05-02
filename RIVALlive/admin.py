@@ -2,7 +2,7 @@ from atexit import register
 
 from django.contrib import admin
 
-from .models import Event
+from .models import Event, ScoreDetail
 from .models import Team
 from .models import Match
 
@@ -17,3 +17,7 @@ class TeamAdmin(admin.ModelAdmin):
 @admin.register(Match)
 class MatchAdmin(admin.ModelAdmin):
     list_display = ("id", "event", "phase", "nbr", "status", "scheduledTime", "playedTime", "redTeam1", "redTeam2", "blueTeam1", "blueTeam2", "redScore", "blueScore", "redRP", "blueRP")
+
+@admin.register(ScoreDetail)
+class ScoreDetailAdmin(admin.ModelAdmin):
+    list_display = ()

@@ -1,11 +1,12 @@
 import datetime
 import math
 
+from django.forms import formset_factory
 from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from .models import Event
 from .models import Match
-from .forms import SchedulerForm
+from .forms import SchedulerForm, ScoreForm
 from .scheduler import outerScheduler
 
 
@@ -59,3 +60,69 @@ def scheduler(request, code):
         return redirect(f"/event/{code}")
 
     return render(request, "scheduler.html", context)
+
+def scoreEntry(request, code, stage, matchNumber):
+    context = {}
+    context["stage"] = stage
+    context["matchNumber"] = matchNumber
+    formset = formset_factory(ScoreForm, extra=2)
+    formsetReq = formset(request.POST or None)
+    context["formset"] = formset
+
+    # get match
+    event = Event.objects.get(code=code)
+    match = Match.objects.get(event=event, nbr=matchNumber, phase=stage)
+    context["redTeam1"] = match.redTeam1
+    context["redTeam2"] = match.redTeam2
+    context["blueTeam1"] = match.blueTeam1
+    context["blueTeam2"] = match.blueTeam2
+
+    # handle POST
+    if request.method == "POST":
+        redScoreForm = formsetReq.forms[0]
+        blueScoreForm = formsetReq.forms[1]
+        # create models
+        redScore = redScoreForm.save()
+        blueScore = blueScoreForm.save()
+        # calculate out extra rps
+        match.redRP = 0
+        match.blueRP = 0
+        match.redRP = redScore.getRPs()
+        match.blueRP = blueScore.getRPs()
+        # math!
+        if redScore.getScore() > blueScore.getScore():
+            # red wins
+            match.redRP += 2
+        elif blueScore.getScore() > redScore.getScore():
+            # blue wins
+            match.blueRP += 2
+        elif blueScore.getScore() == redScore.getScore():
+            # tie
+            match.redRP += 1
+            match.blueRP += 1
+        # process dqs
+        if redScore.robot1dq:
+            match.redTeam1dq = True
+        if redScore.robot2dq:
+            match.redTeam2dq = True
+        if blueScore.robot1dq:
+            match.blueTeam1dq = True
+        if blueScore.robot2dq:
+            match.blueTeam2dq = True
+        # connect up forms
+        match.redScore = redScore
+        match.blueScore = blueScore
+        # mark match as committed
+        match.status = "Cmpd"
+        # commit
+        match.save()
+        redScore.save()
+        blueScore.save()
+        # redirect to next match
+        return redirect(f"/event/{code}/scoreEntry/next")
+
+    return render(request, "scoreEntry.html", context)
+
+def nextScoreEntry(request, code):
+    matches = Match.objects.filter(event=Event.objects.get(code=code)).filter(status="Schd").order_by("scheduledTime")
+    return redirect(f"/event/{code}/scoreEntry/{matches[0].phase}/{matches[0].nbr}")
