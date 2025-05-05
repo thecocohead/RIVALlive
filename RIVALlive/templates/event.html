@@ -10,6 +10,28 @@
     {% endfor %}
     </ul>
 
+    <h2>Rankings</h2>
+    <table>
+        <tr>
+            <th>Team</th>
+            <th>RP</th>
+            <th>Average For</th>
+            <th>Average Against</th>
+            <th>DQs</th>
+            <th>Plays</th>
+        </tr>
+        {% for team in rankings %}
+            <tr>
+            <td>{{ team.team }}</td>
+            <td>{{ team.RP }}</td>
+            <td>{{ team.forAvg }}</td>
+            <td>{{ team.agaAvg }}</td>
+            <td>{{ team.DQs }}</td>
+            <td>{{ team.Plays }}</td>
+            </tr>
+        {% endfor %}
+    </table>
+
     <h2>Schedule</h2>
     <table>
         <tr>

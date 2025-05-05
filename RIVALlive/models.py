@@ -100,7 +100,6 @@ class ScoreDetail(models.Model):
         farL2 = self.farL2normalMissile + self.farL2bonusMissile
         nearL3 = self.nearL3normalMissile + self.nearL3bonusMissile
         farL3 = self.farL3normalMissile + self.farL3bonusMissile
-        print(f"nearL0: {nearL0}, farL0: {farL0}, nearL1: {nearL1}, farL1: {farL1}, nearL2: {nearL2}, farL2: {farL2}, nearL3: {nearL3}, farL3: {farL3}")
         if all(num >= 1 for num in [nearL0, farL0, nearL1, farL1, nearL2, farL2, nearL3, farL3]):
             return True
         else:

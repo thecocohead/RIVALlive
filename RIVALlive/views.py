@@ -1,6 +1,7 @@
 import datetime
 import math
 
+from django.db.models import Q
 from django.forms import formset_factory
 from django.http import HttpResponse
 from django.shortcuts import render, redirect
@@ -31,7 +32,7 @@ def event(request, code):
     startDate = event.startDate.strftime("%B %d, %Y")
     endDate = event.endDate.strftime("%B %d, %Y")
 
-    data = {
+    context = {
         "event" : event,
         "startDate" : startDate,
         "endDate" : endDate,
@@ -39,7 +40,55 @@ def event(request, code):
         "matches" : Match.objects.filter(event=event),
     }
 
-    return render(request, "event.html", data)
+    # rankings!
+    matches = Match.objects.filter(event=event, status="Cmpd")
+    teams = event.teams.all()
+    rankingInfo = []
+    for team in teams:
+        teamMatches = matches.filter(Q(redTeam1 = team) | Q(redTeam2 = team) | Q(blueTeam1 = team) | Q(blueTeam2 = team))
+        rpTot = 0
+        plays = 0
+        totalFor = 0
+        totalAgainst = 0
+        dq = 0
+        for match in teamMatches:
+            plays += 1
+            if any([all([match.redTeam1dq, match.redTeam1 == team]),
+                    all([match.redTeam2dq, match.redTeam2 == team]),
+                    all([match.blueTeam1dq, match.blueTeam1 == team]),
+                    all([match.blueTeam2dq, match.blueTeam2 == team])]):
+                # team is disqualified
+                dq += 1
+            else:
+                # count rp
+                if any([match.redTeam1 == team, match.redTeam2 == team]):
+                    # red alliance
+                    rpTot += match.redRP
+                    totalFor += match.redScore.getScore()
+                    totalAgainst += match.blueScore.getScore()
+                else:
+                    # blue alliance
+                    rpTot += match.blueRP
+                    totalFor += match.blueScore.getScore()
+                    totalAgainst += match.redScore.getScore()
+        # end match calculation
+        rpAvg = rpTot / plays
+        forAvg = totalFor / plays
+        againstAvg = totalAgainst / plays
+        # store info
+        newEntry = {
+            "team": team,
+            "RP": rpAvg,
+            "forAvg": forAvg,
+            "agaAvg": againstAvg,
+            "DQs": dq,
+            "Plays": plays
+        }
+        rankingInfo.append(newEntry)
+    # end teams
+    context["rankings"] = sorted(rankingInfo, key=lambda x: (-x["RP"], -x["forAvg"], -x["agaAvg"]))
+
+    return render(request, "event.html", context)
 
 def scheduler(request, code):
     teamsCount = Event.objects.get(code=code).teams.all().count()
