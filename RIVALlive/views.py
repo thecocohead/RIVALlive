@@ -72,22 +72,40 @@ def event(request, code):
                     totalFor += match.blueScore.getScore()
                     totalAgainst += match.redScore.getScore()
         # end match calculation
-        rpAvg = rpTot / plays
-        forAvg = totalFor / plays
-        againstAvg = totalAgainst / plays
-        # store info
-        newEntry = {
-            "team": team,
-            "RP": rpAvg,
-            "forAvg": forAvg,
-            "agaAvg": againstAvg,
-            "DQs": dq,
-            "Plays": plays
-        }
+        if plays > 0:
+            rpAvg = rpTot / plays
+            forAvg = totalFor / plays
+            againstAvg = totalAgainst / plays
+            # store info
+            newEntry = {
+                "team": team,
+                "RP": rpAvg,
+                "forAvg": forAvg,
+                "agaAvg": againstAvg,
+                "DQs": dq,
+                "Plays": plays
+            }
+        else:
+            newEntry = {
+                "team": team,
+                "RP": -1,
+                "forAvg": 0,
+                "agaAvg": 0,
+                "DQs": dq,
+                "Plays": plays
+            }
         rankingInfo.append(newEntry)
     # end teams
     context["rankings"] = sorted(rankingInfo, key=lambda x: (-x["RP"], -x["forAvg"], -x["agaAvg"]))
 
+    # add NP
+    for entry in context["rankings"]:
+        if entry["RP"] == -1:
+            entry["RP"] = "NP"
+            entry["forAvg"] = ""
+            entry["agaAvg"] = ""
+            entry["DQs"] = ""
+            entry["Plays"] = ""
     return render(request, "event.html", context)
 
 def scheduler(request, code):
