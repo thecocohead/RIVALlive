@@ -98,7 +98,7 @@ def event(request, code):
     # end teams
     context["rankings"] = sorted(rankingInfo, key=lambda x: (-x["RP"], -x["forAvg"], -x["agaAvg"]))
 
-    # add NP
+    # process
     for entry in context["rankings"]:
         if entry["RP"] == -1:
             entry["RP"] = "NP"
@@ -106,6 +106,10 @@ def event(request, code):
             entry["agaAvg"] = ""
             entry["DQs"] = ""
             entry["Plays"] = ""
+        else:
+            entry["RP"] = round(entry["RP"], 2)
+            entry["forAvg"] = round(entry["forAvg"], 2)
+            entry["agaAvg"] = round(entry["agaAvg"], 2)
     return render(request, "event.html", context)
 
 def scheduler(request, code):
