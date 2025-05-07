@@ -7,6 +7,15 @@
     </script>
 
     <p>Number of teams: <span id="numTeams">{{ numTeams }}</span></p>
+
+    {% if currentMatches != 0 and playedMatches != 0 %}
+        <h2>Warning: There are already scores posted for qualification matches!</h2>
+        <h3><i>Generating the schedule will result in these matches and scores being lost.</i></h3>
+        {% elif currentMatches != 0 %}
+        <h2>Warning: A schedule has already been generated!</h2>
+        <h3><i>Generating the schedule will result in the existing schedule being lost. </i></h3>
+    {% endif %}
+
 <form  method = "post">
     {% csrf_token %}
     {{ form.as_table }}

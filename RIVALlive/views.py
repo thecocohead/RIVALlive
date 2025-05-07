@@ -118,6 +118,8 @@ def scheduler(request, code):
     context = {}
     context["eventCode"] = code
     context["numTeams"] = teamsCount
+    context["currentMatches"] = Match.objects.filter(event=Event.objects.get(code=code)).count()
+    context["playedMatches"] = Match.objects.filter(event=Event.objects.get(code=code), status="Cmpd").count()
     form = SchedulerForm()
     if request.method == "GET":
         # GET request
