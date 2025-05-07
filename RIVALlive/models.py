@@ -47,11 +47,11 @@ class ScoreDetail(models.Model):
     farL2bonusMissile = models.IntegerField(verbose_name="Far L2 Nukes", default=0)
     farL3normalMissile = models.IntegerField(verbose_name="Far L3 Missiles", default=0)
     farL3bonusMissile = models.IntegerField(verbose_name="Far L3 Nukes", default=0)
-    robot1Fortify = models.BooleanField(verbose_name="Robot 1 Fortify")
-    robot2Fortify = models.BooleanField(verbose_name="Robot 2 Fortify")
+    robot1Fortify = models.BooleanField(verbose_name="Robot 1 Fortify", default=False)
+    robot2Fortify = models.BooleanField(verbose_name="Robot 2 Fortify", default=False)
     penalties = models.IntegerField(verbose_name="Penalties", default=0)
-    robot1dq = models.BooleanField(verbose_name="Robot 1 Disqualification")
-    robot2dq = models.BooleanField(verbose_name="Robot 2 Disqualification")
+    robot1dq = models.BooleanField(verbose_name="Robot 1 Disqualification", default=False)
+    robot2dq = models.BooleanField(verbose_name="Robot 2 Disqualification", default=False)
 
     def getEndgameSubscore(self):
         fortifyScore = 5

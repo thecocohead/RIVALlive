@@ -152,45 +152,46 @@ def scoreEntry(request, code, stage, matchNumber):
 
     # handle POST
     if request.method == "POST":
-        redScoreForm = formsetReq.forms[0]
-        blueScoreForm = formsetReq.forms[1]
-        # create models
-        redScore = redScoreForm.save()
-        blueScore = blueScoreForm.save()
-        # calculate out extra rps
-        match.redRP = 0
-        match.blueRP = 0
-        match.redRP = redScore.getRPs()
-        match.blueRP = blueScore.getRPs()
-        # math!
-        if redScore.getScore() > blueScore.getScore():
-            # red wins
-            match.redRP += 2
-        elif blueScore.getScore() > redScore.getScore():
-            # blue wins
-            match.blueRP += 2
-        elif blueScore.getScore() == redScore.getScore():
-            # tie
-            match.redRP += 1
-            match.blueRP += 1
-        # process dqs
-        if redScore.robot1dq:
-            match.redTeam1dq = True
-        if redScore.robot2dq:
-            match.redTeam2dq = True
-        if blueScore.robot1dq:
-            match.blueTeam1dq = True
-        if blueScore.robot2dq:
-            match.blueTeam2dq = True
-        # connect up forms
-        match.redScore = redScore
-        match.blueScore = blueScore
-        # mark match as committed
-        match.status = "Cmpd"
-        # commit
-        match.save()
-        redScore.save()
-        blueScore.save()
+        if formsetReq.is_valid():
+            redScoreForm = formsetReq.forms[0]
+            blueScoreForm = formsetReq.forms[1]
+            # create models
+            redScore = redScoreForm.save()
+            blueScore = blueScoreForm.save()
+            # calculate out extra rps
+            match.redRP = 0
+            match.blueRP = 0
+            match.redRP = redScore.getRPs()
+            match.blueRP = blueScore.getRPs()
+            # math!
+            if redScore.getScore() > blueScore.getScore():
+                # red wins
+                match.redRP += 2
+            elif blueScore.getScore() > redScore.getScore():
+                # blue wins
+                match.blueRP += 2
+            elif blueScore.getScore() == redScore.getScore():
+                # tie
+                match.redRP += 1
+                match.blueRP += 1
+            # process dqs
+            if redScore.robot1dq:
+                match.redTeam1dq = True
+            if redScore.robot2dq:
+                match.redTeam2dq = True
+            if blueScore.robot1dq:
+                match.blueTeam1dq = True
+            if blueScore.robot2dq:
+                match.blueTeam2dq = True
+            # connect up forms
+            match.redScore = redScore
+            match.blueScore = blueScore
+            # mark match as committed
+            match.status = "Cmpd"
+            # commit
+            match.save()
+            redScore.save()
+            blueScore.save()
         # redirect to next match
         return redirect(f"/event/{code}/scoreEntry/next")
 
